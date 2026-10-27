@@ -517,3 +517,35 @@ function init() {
   });
 }
 document.addEventListener("DOMContentLoaded", init);
+
+/* ===== PWA: service worker + nút cài ứng dụng (Android Chrome) ===== */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(() => { /* trang vẫn chạy bình thường nếu SW lỗi */ });
+  });
+}
+let deferredInstallPrompt = null;
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  const btn = document.getElementById("installAppBtn");
+  if (btn) btn.hidden = false;
+});
+window.addEventListener("appinstalled", () => {
+  deferredInstallPrompt = null;
+  const btn = document.getElementById("installAppBtn");
+  if (btn) btn.hidden = true;
+  const hint = document.getElementById("installHint");
+  if (hint) hint.textContent = "Đã cài xong. Từ giờ mở biểu tượng Numberblocks trên màn hình chính để vào thẳng ứng dụng.";
+});
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("installAppBtn");
+  if (!btn) return;
+  btn.addEventListener("click", async () => {
+    if (!deferredInstallPrompt) return;
+    deferredInstallPrompt.prompt();
+    const choice = await deferredInstallPrompt.userChoice;
+    if (choice && choice.outcome === "accepted") btn.hidden = true;
+    deferredInstallPrompt = null;
+  });
+});

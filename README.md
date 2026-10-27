@@ -127,22 +127,37 @@ giữ trường `sources` cho từng video để cha mẹ kiểm tra lại ngu�
     web không tải được trong ảnh chụp (hiển thị font dự phòng); trên trình
     duyệt thật font Baloo 2 / Nunito tải từ Google Fonts.
 
+## Cài làm ứng dụng (PWA) trên Android
+
+Trang đạt đủ điều kiện cài đặt kiểu ứng dụng của Chrome cho Android
+(không còn chỉ là lối tắt / shortcut):
+
+- `manifest.webmanifest` — tên app “Học toán cùng Numberblocks”, `display: standalone`, màu nền/màu chủ đạo khớp giao diện, đường dẫn tương đối (`start_url: "."`) để chạy đúng trên mọi tên miền Pages.
+- `icons/` — icon khối số 1-2-3 vẽ theo đúng màu level của trang: 192px và 512px (bắt buộc để Chrome hiện lời mời cài), thêm bản 512px maskable cho biểu tượng tròn của Android và apple-touch-icon 180px.
+- `sw.js` — service worker lưu bộ khung của trang (HTML/CSS/JS/manifest/icon) để app mở nhanh và mở được cả khi mất mạng; video vẫn phát trực tuyến từ YouTube nên xem video cần mạng.
+- Nút “Cài ứng dụng Numberblocks” nằm trong **Khu cha mẹ**: nút tự hiện khi Chrome cho phép cài (sự kiện `beforeinstallprompt`); nếu không thấy nút, mở menu ⋮ của Chrome → “Cài đặt ứng dụng”. Trên iPhone/iPad: nút Chia sẻ → “Thêm vào Màn hình chính”.
+
+Lưu ý: lời mời cài chỉ xuất hiện khi trang chạy trên HTTPS (GitHub Pages
+đáp ứng) — mở bằng `file://` hoặc http trong mạng nhà thì Chrome chỉ cho
+tạo lối tắt.
+
 ## Cấu trúc file
 
 - `index.html` — 3 màn hình: chọn bé (signature: 2 cửa lớn), danh sách, player + PIN + khu cha mẹ
 - `styles.css` — toàn bộ màu/font khai báo ở token `:root` (Hallmark Floor), có Hallmark stamp ở dòng đầu
-- `app.js` — logic lọc, player YouTube IFrame API, click-shield, hẹn giờ, PIN, lịch sử
+- `app.js` — logic lọc, player YouTube IFrame API, click-shield, hẹn giờ, PIN, lịch sử + đăng ký service worker / nút cài app
 - `data.js` — `window.NUMBERBLOCKS_VIDEOS` (378 video, nạp bởi index.html)
 - `data.json` — bản nguồn đầy đủ kèm `sources` từng video
+- `manifest.webmanifest`, `sw.js`, `icons/` — bộ PWA để cài làm ứng dụng
 
 ## Trạng thái
 
-Prototype chạy thử được bằng http server ở trên; đã kiểm tra cú pháp JS
-(`node --check`), kiểm tra mọi `id` trong app.js đều có trong HTML, và chạy
-thử bằng Chrome thật: chọn hồ sơ hiện đúng số thẻ video theo hồ sơ (121 cho bé nhỏ sau lần gộp cuối), player
-mở đúng video và click-shield hoạt động. Việc phát video thật cần origin
+Đã push lên `github.com/vinhdn/numberblocks` (branch `main`). Chạy thử
+bằng http server ở trên; đã kiểm tra cú pháp JS (`node --check`), kiểm tra
+mọi `id` trong app.js đều có trong HTML, và chạy thử bằng Chrome thật:
+chọn hồ sơ hiện đúng số thẻ video theo hồ sơ (121 cho bé nhỏ), player mở
+đúng video và click-shield hoạt động. Việc phát video thật cần origin
 http/https (GitHub Pages) như các site trước của gia đình.
-
-Chưa push GitHub: chờ repo của gia đình (theo bộ nhớ mới cập nhật, repo là
-`github.com/vinhdn/numberblocks` — khi push cần dùng token mới và thu hồi
-token đã dán vào chat sau khi push xong).
+Bản PWA (2026-10-27): đã kiểm tra manifest hợp lệ, service worker đúng
+cú pháp, và mọi đường dẫn trong manifest đều tải được (HTTP 200) khi chạy
+thử local.

@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#fdf6d8">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Numberblocks">
 <meta name="description" content="Trang học toán an toàn cho bé 3 tuổi và 7 tuổi với video Numberblocks chính thức của BBC CBeebies, chia theo level, có học nhân và học chia, không quảng cáo và không video gợi ý bên ngoài.">
 <title>Học toán cùng Numberblocks: cho bé 3 tuổi và 7 tuổi</title>
 <link rel="preconnect" href="https://api.fontshare.com">
@@ -198,6 +205,11 @@
     <h3>Lịch sử xem gần đây</h3>
     <div id="historyList"></div>
     <button id="clearHistoryBtn" class="btn btn-ghost">Xoá lịch sử xem</button>
+  </section>
+  <section class="panel">
+    <h3>Cài làm ứng dụng trên điện thoại</h3>
+    <button id="installAppBtn" class="btn btn-primary" hidden>Cài ứng dụng Numberblocks</button>
+    <p class="hint" id="installHint">Khi đã cài, trang sẽ có biểu tượng riêng trên màn hình chính và mở như một ứng dụng (không còn thanh địa chỉ của trình duyệt). Nếu nút cài chưa hiện: mở trang bằng Chrome trên Android, bấm menu ⋮ ở góc phải rồi chọn “Cài đặt ứng dụng” / “Thêm vào màn hình chính”. Sau khi cài, lần mở sau trang tự chạy như app; xem video vẫn cần mạng.</p>
   </section>
   <section class="panel">
     <h3>Mã PIN</h3>
