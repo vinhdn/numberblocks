@@ -323,3 +323,37 @@ button:focus-visible, input:focus-visible, .progress:focus-visible {
   .btn, .door, .card, .chip, .ctl, #pinPad button, .player-topbar, .player-bottom { transition: none; }
   .door:hover, .card:hover, .btn:hover { translate: none; }
 }
+
+/* ===== TV remote focus (tv.js adds .tv-nav to <body> after the first arrow key) =====
+   Touch/mouse users never see this: it only activates for D-pad navigation.
+   Scale uses the independent `scale` property — width/height are never animated. */
+body.tv-nav button:focus,
+body.tv-nav a:focus,
+body.tv-nav input:focus {
+  outline: 5px solid var(--color-focus);
+  outline-offset: 3px;
+}
+body.tv-nav #shield:focus {
+  outline: 5px solid var(--color-focus);
+  outline-offset: -5px;
+}
+body.tv-nav .door:focus,
+body.tv-nav .card:focus,
+body.tv-nav .chip:focus {
+  scale: 1.05;
+  position: relative;
+  z-index: 2;
+}
+body.tv-nav .btn:focus,
+body.tv-nav .ctl:focus,
+body.tv-nav #pinPad button:focus,
+body.tv-nav #timerOptions button:focus {
+  scale: 1.12;
+  position: relative;
+  z-index: 2;
+}
+@media (prefers-reduced-motion: reduce) {
+  body.tv-nav .door:focus, body.tv-nav .card:focus, body.tv-nav .chip:focus,
+  body.tv-nav .btn:focus, body.tv-nav .ctl:focus,
+  body.tv-nav #pinPad button:focus, body.tv-nav #timerOptions button:focus { scale: none; }
+}
