@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#fdf6d8">
+<meta name="description" content="Trang học toán an toàn cho bé 3 tuổi và 7 tuổi với video Numberblocks chính thức của BBC CBeebies, chia theo level, có học nhân và học chia, không quảng cáo và không video gợi ý bên ngoài.">
+<title>Học toán cùng Numberblocks: cho bé 3 tuổi và 7 tuổi</title>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=chillax@500,600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ===== CHỌN HỒ SƠ (SIGNATURE) ===== -->
+<div id="profileView">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-blocks" aria-hidden="true"><i class="b1">1</i><i class="b2">2</i><i class="b3">3</i></span>
+      <span class="brand-name">Học toán cùng Numberblocks</span>
+    </div>
+    <button id="parentBtn0" class="btn btn-ghost">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+      Cho cha mẹ
+    </button>
+  </header>
+
+  <main class="profile-main">
+    <h1 class="profile-heading">Hôm nay ai học toán?</h1>
+    <p class="profile-sub">Chọn một cửa để vào đúng lớp của bé. Mỗi lớp chỉ hiện video vừa sức, không có video lạ.</p>
+
+    <div class="doors">
+      <button class="door door-nho" id="doorNho">
+        <span class="door-blocks" aria-hidden="true">
+          <span class="nb nb-1">1</span><span class="nb nb-2">2</span><span class="nb nb-3">3</span><span class="nb nb-4">4</span><span class="nb nb-5">5</span>
+        </span>
+        <span class="door-title">Bé nhỏ</span>
+        <span class="door-age">3 tuổi trở lên</span>
+        <span class="door-desc">Đếm số 1 đến 10, cộng trừ nhẹ nhàng qua bài hát và trò chơi.</span>
+        <span class="door-cta">Vào lớp bé nhỏ</span>
+      </button>
+
+      <button class="door door-lon" id="doorLon">
+        <span class="door-blocks" aria-hidden="true">
+          <span class="nb nb-6">6</span><span class="nb nb-10">10</span><span class="nb nb-12">12</span><span class="nb nb-20">20</span><span class="nb nb-x">× ÷</span>
+        </span>
+        <span class="door-title">Bé lớn</span>
+        <span class="door-age">7 tuổi trở lên</span>
+        <span class="door-desc">Số đến 100, học nhân, học chia, gấp đôi và một nửa.</span>
+        <span class="door-cta">Vào lớp bé lớn</span>
+      </button>
+    </div>
+
+    <p class="profile-note">Video chính thức từ kênh Numberblocks của BBC CBeebies. Trang này không có quảng cáo, không có bình luận, không có video gợi ý bên ngoài.</p>
+  </main>
+</div>
+
+<!-- ===== DANH SÁCH VIDEO ===== -->
+<div id="homeView" class="hidden">
+  <header class="topbar">
+    <button id="switchProfileBtn" class="btn btn-ghost">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      Đổi bé
+    </button>
+    <div class="brand">
+      <span class="brand-blocks" aria-hidden="true"><i class="b1">1</i><i class="b2">2</i><i class="b3">3</i></span>
+      <span class="brand-name" id="homeTitle">Học toán cùng Numberblocks</span>
+    </div>
+    <div class="top-actions">
+      <button id="searchBtn" class="btn btn-ghost" aria-label="Tìm video">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        Tìm
+      </button>
+      <button id="parentBtn" class="btn btn-ghost">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+        Cho cha mẹ
+      </button>
+    </div>
+  </header>
+
+  <div id="searchBar" class="hidden">
+    <label class="search-label" for="searchInput">Tìm video theo tên</label>
+    <input id="searchInput" type="text" placeholder="Ví dụ: nhân, chia, đếm số, ten">
+  </div>
+
+  <nav class="chips" id="levelChips" aria-label="Lọc theo level"></nav>
+  <nav class="chips chips-cat" id="catChips" aria-label="Lọc theo chủ đề"></nav>
+  <p class="count-line" id="countLine"></p>
+  <main id="grid"></main>
+  <p id="emptyMsg" class="hidden">Không tìm thấy video nào. Thử chọn chủ đề khác nhé.</p>
+</div>
+
+<!-- ===== PLAYER FULL PAGE ===== -->
+<div id="playerView" class="hidden">
+  <div class="video-box" id="videoBox">
+    <div id="ytPlayer"></div>
+    <div id="shield" title="Phát hoặc tạm dừng"></div>
+
+    <div class="player-topbar">
+      <button id="backBtn" class="btn btn-player">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+        Trở về
+      </button>
+      <span id="timerBadge" class="timer-badge hidden"></span>
+      <button id="parentBtn2" class="btn btn-player">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+        Cho cha mẹ
+      </button>
+    </div>
+
+    <button id="bigPlay" class="big-play hidden" aria-label="Phát video">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
+    </button>
+
+    <div class="player-bottom">
+      <div id="nowTitle"></div>
+      <div class="controlbar">
+        <button id="prevBtn" class="ctl" aria-label="Video trước">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h2v14H6zM20 5.5v13L9.5 12z"/></svg>
+        </button>
+        <button id="playBtn" class="ctl ctl-play" aria-label="Phát hoặc tạm dừng">
+          <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
+        </button>
+        <button id="nextBtn" class="ctl" aria-label="Video tiếp theo">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 5h2v14h-2zM4 5.5v13L14.5 12z"/></svg>
+        </button>
+        <button id="repeatBtn" class="ctl" aria-label="Lặp lại video này">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 2.5l3 3-3 3"/><path d="M3 12.5v-1a5 5 0 015-5h12M7 21.5l-3-3 3-3"/><path d="M21 11.5v1a5 5 0 01-5 5H4"/></svg>
+        </button>
+        <div class="progress" id="progressWrap" role="slider" aria-label="Thanh tiến trình">
+          <div class="fill" id="progressBar"></div>
+          <div class="knob" id="progressKnob"></div>
+        </div>
+        <button id="volBtn" class="ctl" aria-label="Bật hoặc tắt tiếng">
+          <svg id="volIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5L6 9H3v6h3l5 4z" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 010 7M18.5 5.5a9 9 0 010 13"/></svg>
+        </button>
+        <button id="fsBtn" class="ctl" aria-label="Toàn màn hình">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+        </button>
+      </div>
+      <div class="timer-line hidden" id="timerLine">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9.5v3.5l2.5 2M9 2.5h6"/></svg>
+        <span>Còn <b id="timerText">15:00</b> giờ học toán</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== HẾT GIỜ ===== -->
+<div id="timeUpView" class="hidden overlay-screen">
+  <span class="nb nb-big" aria-hidden="true">10</span>
+  <h2>Đã hết giờ học toán rồi</h2>
+  <p>Bé nghỉ mắt một chút, đứng dậy vận động nhé. Cha mẹ nhập mã PIN nếu muốn xem thêm.</p>
+  <button id="timeUpHomeBtn" class="btn btn-primary">Về trang chủ</button>
+  <button id="timeUpParentBtn" class="btn btn-ghost">Cha mẹ mở thêm giờ</button>
+</div>
+
+<!-- ===== PIN ===== -->
+<div id="pinView" class="hidden overlay-screen">
+  <h2 id="pinTitle">Nhập mã PIN của cha mẹ</h2>
+  <div id="pinDots" aria-live="polite">○ ○ ○ ○</div>
+  <div id="pinPad">
+    <button data-key="1">1</button><button data-key="2">2</button><button data-key="3">3</button>
+    <button data-key="4">4</button><button data-key="5">5</button><button data-key="6">6</button>
+    <button data-key="7">7</button><button data-key="8">8</button><button data-key="9">9</button>
+    <button data-key="del" aria-label="Xoá">⌫</button><button data-key="0">0</button><button data-key="cancel" aria-label="Đóng">✕</button>
+  </div>
+  <p id="pinError" class="error hidden">Sai mã PIN, thử lại nhé.</p>
+  <p class="hint">Mã PIN mặc định là 1234. Cha mẹ đổi được trong khu cha mẹ.</p>
+</div>
+
+<!-- ===== KHU CHA MẸ ===== -->
+<div id="parentView" class="hidden">
+  <header class="topbar">
+    <div class="brand"><span class="brand-name">Khu cha mẹ</span></div>
+    <button id="parentCloseBtn" class="btn btn-ghost">Đóng khu cha mẹ</button>
+  </header>
+  <section class="panel">
+    <h3>Hẹn giờ xem</h3>
+    <div id="timerOptions">
+      <button data-min="0">Tắt</button>
+      <button data-min="15">15 phút</button>
+      <button data-min="30">30 phút</button>
+      <button data-min="45">45 phút</button>
+      <button data-min="60">60 phút</button>
+    </div>
+    <p class="hint">Khi hết giờ, video tự dừng và hiện màn hình nghỉ mắt. Cài đặt lưu trên máy này.</p>
+  </section>
+  <section class="panel">
+    <h3>Danh sách video</h3>
+    <p class="hint" id="videoCount"></p>
+    <p class="hint">Toàn bộ video đều lấy từ kênh chính thức Numberblocks (BBC CBeebies) và đã kiểm tra mã video. Xem chi tiết nguồn trong README của dự án.</p>
+  </section>
+  <section class="panel">
+    <h3>Lịch sử xem gần đây</h3>
+    <div id="historyList"></div>
+    <button id="clearHistoryBtn" class="btn btn-ghost">Xoá lịch sử xem</button>
+  </section>
+  <section class="panel">
+    <h3>Mã PIN</h3>
+    <button id="changePinBtn" class="btn btn-primary">Đổi mã PIN</button>
+    <p class="hint">PIN hiện lưu trên máy này (localStorage). Mặc định 1234.</p>
+  </section>
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
