@@ -7,6 +7,66 @@
 /* waive: touch size — Hum controls are 54px, kid-safety rule for this family sets primary touch targets at 72px, recorded here */
 
 :root {
+  --color-paper: #f7f5ec;
+  --color-paper-2: #f0ede0;
+  --color-paper-3: #e6e1d1;
+  --color-ink: #12161c;
+  --color-ink-2: #272c32;
+  --color-muted: #565b63;
+  --color-rule: #d7d4c9;
+  --color-accent: #f7d21a;
+  --color-accent-deep: #c9a000;
+  --color-accent-ink: #12161c;
+  --color-accent-2: #0064be;
+  --color-accent-3: #ff5e63;
+  --color-mint: #70e093;
+  --color-mint-deep: #00713e;
+  --color-focus: #0064be;
+  --color-card: #fcfbf6;
+  --color-edge: #d2c6aa;
+  --color-fringe: #fefcf8;
+  --color-kraft: #ae7d52;
+  --color-sand: #d9ac69;
+  --color-sugar: #c6dfef;
+  --color-hill-1: #ebf0da;
+  --color-hill-2: #d6eacc;
+  --color-leaf: #36a558;
+  --color-level-1: #d72828;
+  --color-level-2: #ab4700;
+  --color-level-3: #edc812;
+  --color-level-4: #1c6d26;
+  --color-level-5: #0074ca;
+  --color-on-dark: #faf8f1;
+  --color-player: #050911;
+  --color-player-bar: rgba(5, 9, 17, 0.82);
+  --color-shield-tint: rgba(5, 9, 17, 0.001);
+  --color-error: #bb061e;
+  --font-display: "Chillax", "Baloo 2", ui-rounded, "Nunito", ui-sans-serif, sans-serif;
+  --font-body: "Chillax", "Baloo 2", ui-rounded, "Nunito", ui-sans-serif, sans-serif;
+  --radius-card: 28px;
+  --radius-stock: 16px;
+  --radius-input: 14px;
+  --radius-pill: 999px;
+  --rule-hair: 1px;
+  --shadow-card: 0 1px 2px rgba(18, 22, 28, 0.06), 0 12px 28px -14px rgba(18, 22, 28, 0.22);
+  --tracking-display: -0.03em;
+  --display-weight: 600;
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-snap: cubic-bezier(0.22, 1, 0.36, 1);
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 20px;
+  --space-lg: 32px;
+  --space-xl: 52px;
+  --container: 1180px;
+  --dur-micro: 160ms;
+  --dur-fade: 260ms;
+}
+
+/* Wide-gamut originals: only browsers that understand oklch (Chrome 111+) take these;
+   older engines (e.g. Samsung Tizen 4.0 / Chrome 56) keep the sRGB fallbacks above. */
+@supports (color: oklch(50% 0.1 100)) {
+  :root {
   --color-paper: oklch(97% 0.012 95);
   --color-paper-2: oklch(94.5% 0.018 95);
   --color-paper-3: oklch(91% 0.022 95);
@@ -41,30 +101,12 @@
   --color-player-bar: oklch(14% 0.02 255 / 0.82);
   --color-shield-tint: oklch(14% 0.02 255 / 0.001);
   --color-error: oklch(50% 0.2 25);
-  --font-display: "Chillax", "Baloo 2", ui-rounded, "Nunito", ui-sans-serif, sans-serif;
-  --font-body: "Chillax", "Baloo 2", ui-rounded, "Nunito", ui-sans-serif, sans-serif;
-  --radius-card: 28px;
-  --radius-stock: 16px;
-  --radius-input: 14px;
-  --radius-pill: 999px;
-  --rule-hair: 1px;
-  --shadow-card: 0 1px 2px oklch(20% 0.014 255 / 0.06), 0 12px 28px -14px oklch(20% 0.014 255 / 0.22);
-  --tracking-display: -0.03em;
-  --display-weight: 600;
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ease-snap: cubic-bezier(0.22, 1, 0.36, 1);
-  --space-xs: 8px;
-  --space-sm: 12px;
-  --space-md: 20px;
-  --space-lg: 32px;
-  --space-xl: 52px;
-  --container: 1180px;
-  --dur-micro: 160ms;
-  --dur-fade: 260ms;
+    --shadow-card: 0 1px 2px oklch(20% 0.014 255 / 0.06), 0 12px 28px -14px oklch(20% 0.014 255 / 0.22);
+  }
 }
 
 * { box-sizing: border-box; }
-html, body { overflow-x: clip; }
+html, body { overflow-x: hidden; overflow-x: clip; }
 body {
   margin: 0;
   font-family: var(--font-body);
@@ -102,7 +144,7 @@ button:focus-visible, input:focus-visible, .progress:focus-visible {
 .brand-blocks { display: inline-flex; gap: 4px; align-items: flex-end; }
 .brand-blocks i {
   font-style: normal; font-weight: 700; color: var(--color-on-dark);
-  display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; font-size: 17px;
+  display: grid; align-items: center; justify-items: center; place-items: center; width: 30px; height: 30px; border-radius: 8px; font-size: 17px;
 }
 .brand-blocks .b1 { background: var(--color-level-1); }
 .brand-blocks .b2 { background: var(--color-level-2); }
@@ -133,9 +175,9 @@ button:focus-visible, input:focus-visible, .progress:focus-visible {
 
 /* profile gate */
 .profile-main { max-width: var(--container); margin: 0 auto; padding: 0 var(--space-md) var(--space-xl); min-height: calc(100vh - 130px); display: flex; flex-direction: column; justify-content: center; }
-.profile-heading { font-size: clamp(38px, 6vw, 64px); margin: var(--space-sm) 0 var(--space-xs); max-width: 12ch; }
+.profile-heading { font-size: 54px; font-size: clamp(38px, 6vw, 64px); margin: var(--space-sm) 0 var(--space-xs); max-width: 12ch; }
 .profile-sub { font-size: 21px; color: var(--color-ink-2); max-width: 52ch; margin: 0 0 var(--space-lg); }
-.doors { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-md); }
+.doors { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-gap: var(--space-md); gap: var(--space-md); }
 .door {
   border: 0; text-align: left; border-radius: var(--radius-card);
   padding: var(--space-lg); min-height: 380px;
@@ -149,7 +191,7 @@ button:focus-visible, input:focus-visible, .progress:focus-visible {
 .door-lon { background: var(--color-sugar); }
 .door-blocks { display: flex; gap: var(--space-xs); flex-wrap: wrap; align-items: flex-end; min-height: 76px; }
 .nb {
-  display: grid; place-items: center; border-radius: 12px;
+  display: grid; align-items: center; justify-items: center; place-items: center; border-radius: 12px;
   width: 56px; height: 56px; font-weight: 800; font-size: 26px; color: var(--color-on-dark);
 }
 .nb-1 { background: var(--color-level-1); }
@@ -203,11 +245,11 @@ button:focus-visible, input:focus-visible, .progress:focus-visible {
 #grid {
   max-width: var(--container); margin: 0 auto;
   padding: var(--space-sm) var(--space-md) var(--space-xl);
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: var(--space-md);
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); grid-gap: var(--space-md); gap: var(--space-md);
 }
 .card {
   border: 0; padding: 0; text-align: left; background: var(--color-card);
-  border-radius: var(--radius-card); overflow: clip; box-shadow: var(--shadow-card);
+  border-radius: var(--radius-card); overflow: hidden; overflow: clip; box-shadow: var(--shadow-card);
   transition: translate var(--dur-micro) var(--ease-snap), opacity var(--dur-micro) var(--ease-snap);
 }
 .card:hover { translate: 0 -4px; }
@@ -217,11 +259,11 @@ button:focus-visible, input:focus-visible, .progress:focus-visible {
 .play-mini {
   position: absolute; right: 12px; bottom: 12px; width: 56px; height: 56px;
   border-radius: var(--radius-pill); background: var(--color-accent); color: var(--color-accent-ink);
-  display: grid; place-items: center;
+  display: grid; align-items: center; justify-items: center; place-items: center;
 }
 .play-mini svg { width: 28px; height: 28px; }
-.card-body { padding: var(--space-sm) var(--space-md) var(--space-md); display: grid; gap: var(--space-xs); }
-.card-title { font-weight: 700; font-size: 18px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: clip; }
+.card-body { padding: var(--space-sm) var(--space-md) var(--space-md); display: grid; grid-gap: var(--space-xs); gap: var(--space-xs); }
+.card-title { font-weight: 700; font-size: 18px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow: clip; }
 .card-meta { display: flex; gap: var(--space-xs); flex-wrap: wrap; align-items: center; }
 .meta-pill { border-radius: var(--radius-pill); padding: var(--space-xs) var(--space-sm); font-size: 14px; font-weight: 700; background: var(--color-paper-2); color: var(--color-ink-2); }
 .meta-pill.lv-1 { background: var(--color-level-1); color: var(--color-on-dark); }
@@ -232,10 +274,10 @@ button:focus-visible, input:focus-visible, .progress:focus-visible {
 #emptyMsg { text-align: center; font-size: 20px; padding: var(--space-lg); }
 
 /* player */
-#playerView { position: fixed; inset: 0; background: var(--color-player); z-index: 40; }
+#playerView { position: fixed; top: 0; right: 0; bottom: 0; left: 0; inset: 0; background: var(--color-player); z-index: 40; }
 .video-box { position: relative; width: 100%; height: 100%; }
-.video-box iframe, #ytPlayer { position: absolute; inset: 0; width: 100%; height: 100%; }
-#shield { position: absolute; inset: 0; z-index: 5; background: var(--color-shield-tint); cursor: pointer; }
+.video-box iframe, #ytPlayer { position: absolute; top: 0; right: 0; bottom: 0; left: 0; inset: 0; width: 100%; height: 100%; }
+#shield { position: absolute; top: 0; right: 0; bottom: 0; left: 0; inset: 0; z-index: 5; background: var(--color-shield-tint); cursor: pointer; }
 .player-topbar {
   position: absolute; top: 0; left: 0; right: 0; z-index: 8;
   display: flex; justify-content: space-between; align-items: center; gap: var(--space-sm);
@@ -253,7 +295,7 @@ button:focus-visible, input:focus-visible, .progress:focus-visible {
 .controlbar { display: flex; align-items: center; gap: var(--space-xs); flex-wrap: wrap; }
 .ctl {
   border: 0; border-radius: var(--radius-pill); width: 72px; height: 72px; flex: none;
-  display: grid; place-items: center;
+  display: grid; align-items: center; justify-items: center; place-items: center;
   background: var(--color-card); color: var(--color-ink);
   transition: translate var(--dur-micro) var(--ease-snap), opacity var(--dur-micro) var(--ease-snap);
 }
@@ -268,7 +310,7 @@ button:focus-visible, input:focus-visible, .progress:focus-visible {
 .big-play {
   position: absolute; z-index: 7; left: 50%; top: 50%; transform: translate(-50%, -50%);
   width: 120px; height: 120px; border: 0; border-radius: var(--radius-pill);
-  background: var(--color-accent); color: var(--color-accent-ink); display: grid; place-items: center;
+  background: var(--color-accent); color: var(--color-accent-ink); display: grid; align-items: center; justify-items: center; place-items: center;
 }
 .big-play svg { width: 58px; height: 58px; }
 .timer-badge, .timer-line { color: var(--color-on-dark); font-weight: 700; }
@@ -278,14 +320,14 @@ button:focus-visible, input:focus-visible, .progress:focus-visible {
 
 /* overlays and parent */
 .overlay-screen {
-  position: fixed; inset: 0; z-index: 50; background: var(--color-paper);
+  position: fixed; top: 0; right: 0; bottom: 0; left: 0; inset: 0; z-index: 50; background: var(--color-paper);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: var(--space-md); text-align: center; padding: var(--space-lg);
 }
 .overlay-screen h2 { font-size: 36px; margin: 0; }
 .overlay-screen p { max-width: 46ch; color: var(--color-ink-2); margin: 0; }
 #pinDots { font-size: 38px; letter-spacing: 10px; }
-#pinPad { display: grid; grid-template-columns: repeat(3, 84px); gap: var(--space-sm); }
+#pinPad { display: grid; grid-template-columns: repeat(3, 84px); grid-gap: var(--space-sm); gap: var(--space-sm); }
 #pinPad button {
   border: 0; border-radius: var(--radius-stock); min-height: 72px; font-size: 26px; font-weight: 800;
   background: var(--color-card); color: var(--color-ink); box-shadow: inset 0 0 0 1px var(--color-rule), 0 5px 0 0 var(--color-edge);
@@ -306,7 +348,7 @@ button:focus-visible, input:focus-visible, .progress:focus-visible {
   font-weight: 700; font-size: 17px; background: var(--color-paper-2); color: var(--color-ink);
 }
 #timerOptions button.active { background: var(--color-ink); color: var(--color-paper); }
-#historyList { display: grid; gap: var(--space-xs); margin-bottom: var(--space-md); }
+#historyList { display: grid; grid-gap: var(--space-xs); gap: var(--space-xs); margin-bottom: var(--space-md); }
 .history-item { padding: var(--space-sm) var(--space-md); background: var(--color-paper); border-radius: var(--radius-stock); }
 .history-item b { display: block; }
 .history-item span { color: var(--color-muted); font-size: 15px; }
@@ -356,4 +398,38 @@ body.tv-nav #timerOptions button:focus {
   body.tv-nav .door:focus, body.tv-nav .card:focus, body.tv-nav .chip:focus,
   body.tv-nav .btn:focus, body.tv-nav .ctl:focus,
   body.tv-nav #pinPad button:focus, body.tv-nav #timerOptions button:focus { scale: none; }
+}
+
+/* ===== Legacy engine fallbacks (Samsung Tizen 4.0 / Chrome 56) =====
+   These blocks only take effect where the modern feature is missing;
+   current browsers skip them, so nothing changes on phone/desktop. */
+
+/* aspect-ratio arrived in Chrome 88: give .thumb its 16:9 box with padding instead */
+@supports not (aspect-ratio: 1 / 1) {
+  .thumb { height: 0; padding-top: 56.25%; }
+  .thumb img { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
+}
+
+/* flex `gap` arrived in Chrome 84 (grid gap is covered by grid-gap above):
+   recreate the same spacing with margins on flex children */
+@supports not (gap: 1px) {
+  .brand > * + * { margin-left: var(--space-sm); }
+  .brand-blocks > * + * { margin-left: 4px; }
+  .btn > * + * { margin-left: var(--space-xs); }
+  .player-topbar > * + * { margin-left: var(--space-sm); }
+  .timer-line > * + * { margin-left: var(--space-xs); }
+  .topbar > * + *, .top-actions > * + * { margin-left: var(--space-sm); }
+  .chips > *, .card-meta > *, .controlbar > *, #timerOptions > * { margin-right: var(--space-xs); margin-bottom: var(--space-xs); }
+  .top-actions > * { margin-bottom: var(--space-sm); }
+  .door-blocks > * { margin-right: var(--space-xs); margin-bottom: var(--space-xs); }
+  .door > * + * { margin-top: var(--space-sm); }
+  .door > .door-cta { margin-top: auto; }
+  .overlay-screen > * + * { margin-top: var(--space-md); }
+}
+
+/* the standalone `scale` property arrived in Chrome 104: same TV focus zoom via transform */
+@supports not (scale: 1) {
+  body.tv-nav .door:focus, body.tv-nav .card:focus, body.tv-nav .chip:focus { transform: scale(1.05); }
+  body.tv-nav .btn:focus, body.tv-nav .ctl:focus,
+  body.tv-nav #pinPad button:focus, body.tv-nav #timerOptions button:focus { transform: scale(1.12); }
 }
