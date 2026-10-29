@@ -2,11 +2,12 @@
    Caches only this site's own app shell so Chrome on Android offers a real
    "Install app" (not just a shortcut) and the shell opens offline.
    Video playback still streams from YouTube and needs a connection. */
-const CACHE = "numberblocks-pwa-v4";
+const CACHE = "numberblocks-pwa-v5";
 const SHELL = [
   "./",
   "./index.html",
   "./styles.css",
+  "./polyfills.js",
   "./app.js",
   "./tv.js",
   "./data.js",
