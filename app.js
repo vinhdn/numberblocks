@@ -6,6 +6,7 @@ const LS = {
   pin: "nb_pin",
   timer: "nb_timer_min",
   history: "nb_history",
+  progress: "nb_progress",
   profile: "nb_profile"
 };
 document.documentElement.classList.add("js");
@@ -55,6 +56,10 @@ let repeatOne = false;
 let pinMode = "enter"; // enter | set-new
 let pinBuffer = "";
 let pinReturnTo = "home"; // where to go back after pin cancel
+let resumeSeek = 0; // seconds to resume the opening video at
+let resumeGuardId = ""; // video id protected from early overwrite right after a resume
+let resumeGuardUntil = 0;
+let lastProgSave = 0;
 
 const VIDEOS = Array.isArray(window.NUMBERBLOCKS_VIDEOS) ? window.NUMBERBLOCKS_VIDEOS : [];
 
@@ -134,6 +139,8 @@ function renderGrid() {
     pm.className = "play-mini";
     pm.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>';
     thumb.appendChild(img); thumb.appendChild(pm);
+    const wb = buildWatchBar(v);
+    if (wb) thumb.appendChild(wb);
     const body = document.createElement("div");
     body.className = "card-body";
     const title = document.createElement("div");
@@ -181,6 +188,70 @@ function showProfiles() {
   $("profileView").classList.remove("hidden");
 }
 
+
+// ---------- watch progress (resume) ----------
+function loadProgressMap() {
+  try { return JSON.parse(localStorage.getItem(LS.progress) || "{}") || {}; } catch (e) { return {}; }
+}
+function getProgress(id) {
+  const p = loadProgressMap()[id];
+  return p && p.t > 0 ? p : null;
+}
+function storeProgress(id, t, d) {
+  const map = loadProgressMap();
+  map[id] = { t: Math.floor(t), d: Math.floor(d) || 0, at: Date.now() };
+  const keys = Object.keys(map);
+  if (keys.length > 120) { // keep the store small: drop the least recently watched
+    keys.sort((a, b) => (map[a].at || 0) - (map[b].at || 0));
+    keys.slice(0, keys.length - 120).forEach((k) => delete map[k]);
+  }
+  try { localStorage.setItem(LS.progress, JSON.stringify(map)); } catch (e) {}
+}
+function removeProgress(id) {
+  const map = loadProgressMap();
+  if (map[id]) { delete map[id]; try { localStorage.setItem(LS.progress, JSON.stringify(map)); } catch (e) {} }
+}
+function recordProgress(v, c, d) {
+  if (!v || !d || c < 5) return;
+  if (d - c <= 10 || c / d >= 0.95) { removeProgress(v.id); return; } // finished: next open starts fresh
+  // right after a resume the player briefly reports ~0s before the seek lands; never let that erase the saved spot
+  if (resumeGuardId === v.id && Date.now() < resumeGuardUntil && c < resumeSeek - 3) return;
+  storeProgress(v.id, c, d);
+}
+function captureProgress() {
+  if (!player || !playerReady || currentIdx < 0) return;
+  const v = queue[currentIdx];
+  if (!v) return;
+  let d = 0, c = 0;
+  try { d = player.getDuration() || 0; c = player.getCurrentTime() || 0; } catch (e) {}
+  if (d > 0 && c > 0) recordProgress(v, c, d);
+}
+function buildWatchBar(v) {
+  const p = getProgress(v.id);
+  if (!p) return null;
+  const d = p.d || v.dur || 0;
+  if (!d || !p.t) return null;
+  const pct = (p.t / d) * 100;
+  if (pct < 2 || pct >= 95) return null;
+  const bar = document.createElement("div");
+  bar.className = "watch-progress";
+  const fill = document.createElement("i");
+  fill.style.width = pct + "%";
+  bar.appendChild(fill);
+  return bar;
+}
+function updateWatchBars() {
+  const cards = $("grid").children;
+  for (let i = 0; i < queue.length && i < cards.length; i++) {
+    const thumb = cards[i].querySelector(".thumb");
+    if (!thumb) continue;
+    const old = thumb.querySelector(".watch-progress");
+    if (old) old.remove();
+    const bar = buildWatchBar(queue[i]);
+    if (bar) thumb.appendChild(bar);
+  }
+}
+
 // ---------- player ----------
 function loadYouTubeAPI(cb) {
   if (window.YT && YT.Player) return cb();
@@ -197,6 +268,7 @@ function saveHistory(v) {
   localStorage.setItem(LS.history, JSON.stringify(h.slice(0, 40)));
 }
 function openPlayer(i) {
+  captureProgress(); // stash the outgoing video's position before switching
   currentIdx = i;
   const v = queue[i];
   if (!v) return;
@@ -205,6 +277,11 @@ function openPlayer(i) {
   $("playerView").classList.remove("hidden");
   $("nowTitle").textContent = v.t;
   errorStreak = 0;
+  const savedPos = getProgress(v.id);
+  resumeSeek = savedPos ? Math.floor(savedPos.t) : 0;
+  if (resumeSeek && savedPos.d && resumeSeek > savedPos.d - 10) { removeProgress(v.id); resumeSeek = 0; }
+  resumeGuardId = v.id;
+  resumeGuardUntil = Date.now() + 5000;
   saveHistory(v);
   startTimerIfSet();
   loadYouTubeAPI(() => {
@@ -219,6 +296,7 @@ function openPlayer(i) {
         events: {
           onReady: (e) => {
             playerReady = true;
+            if (resumeSeek > 0) { try { e.target.seekTo(resumeSeek, true); } catch (err) {} }
             try { e.target.unloadModule("captions"); } catch (err) {}
             try { e.target.setOption("captions", "track", {}); } catch (err) {}
             e.target.playVideo();
@@ -239,7 +317,8 @@ function openPlayer(i) {
         }
       });
     } else {
-      player.loadVideoById(v.id);
+      if (resumeSeek > 0) player.loadVideoById({ videoId: v.id, startSeconds: resumeSeek });
+      else player.loadVideoById(v.id);
       try { player.unloadModule("captions"); } catch (err) {}
     }
   });
@@ -247,11 +326,12 @@ function openPlayer(i) {
   pokeControls();
 }
 function closePlayer(silent) {
+  captureProgress();
   if (player && playerReady) { try { player.pauseVideo(); } catch (e) {} }
   stopProgress();
   stopCountdown();
   $("playerView").classList.add("hidden");
-  if (!silent && profile) $("homeView").classList.remove("hidden");
+  if (!silent && profile) { $("homeView").classList.remove("hidden"); updateWatchBars(); }
   if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
 }
 function playNext() {
@@ -308,6 +388,12 @@ function startProgress() {
         const pct = (c / d) * 100;
         $("progressBar").style.width = pct + "%";
         $("progressKnob").style.left = pct + "%";
+        const now = Date.now();
+        if (c > 0 && now - lastProgSave >= 4000) {
+          let st = -1;
+          try { st = player.getPlayerState(); } catch (e) {}
+          if (st === YT.PlayerState.PLAYING) { lastProgSave = now; recordProgress(queue[currentIdx], c, d); }
+        }
       }
     }
   }, 500);
@@ -340,6 +426,7 @@ function updateTimerUI() {
   $("timerLine").classList.remove("hidden");
 }
 function timeUp() {
+  captureProgress();
   if (player && playerReady) { try { player.pauseVideo(); } catch (e) {} }
   stopProgress();
   $("playerView").classList.add("hidden");
@@ -348,6 +435,7 @@ function timeUp() {
 
 // ---------- PIN and parent ----------
 function askPin(returnTo) {
+  captureProgress();
   pinMode = "enter";
   pinReturnTo = returnTo || "home";
   pinBuffer = "";
@@ -411,8 +499,8 @@ function init() {
   $("parentBtn").onclick = () => askPin("home");
   $("parentBtn2").onclick = () => askPin("home");
   $("timeUpParentBtn").onclick = () => askPin("home");
-  $("timeUpHomeBtn").onclick = () => { $("timeUpView").classList.add("hidden"); if (profile) { $("homeView").classList.remove("hidden"); } else $("profileView").classList.remove("hidden"); };
-  $("parentCloseBtn").onclick = () => { $("parentView").classList.add("hidden"); if (profile) $("homeView").classList.remove("hidden"); else $("profileView").classList.remove("hidden"); };
+  $("timeUpHomeBtn").onclick = () => { updateWatchBars(); $("timeUpView").classList.add("hidden"); if (profile) { $("homeView").classList.remove("hidden"); } else $("profileView").classList.remove("hidden"); };
+  $("parentCloseBtn").onclick = () => { updateWatchBars(); $("parentView").classList.add("hidden"); if (profile) $("homeView").classList.remove("hidden"); else $("profileView").classList.remove("hidden"); };
 
   $("searchBtn").onclick = () => {
     const bar = $("searchBar");
@@ -508,6 +596,7 @@ function init() {
   };
   $("clearHistoryBtn").onclick = () => { localStorage.removeItem(LS.history); renderParent(); };
 
+  window.addEventListener("beforeunload", captureProgress);
   document.addEventListener("keydown", (e) => {
     if ($("playerView").classList.contains("hidden")) return;
     if (e.key === " " || e.key === "k") { e.preventDefault(); togglePlay(); }
